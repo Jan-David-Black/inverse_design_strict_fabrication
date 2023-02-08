@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.335">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Integration with ceviche challenges to test the optimization">
+
+<title>Inverse Design - Ceviche Challenges</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+<script src="https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed-amd.js" crossorigin="anonymous"></script>
+
+
+<link rel="stylesheet" href="../styles.css">
+<meta property="og:title" content="Inverse Design - Ceviche Challenges">
+<meta property="og:description" content="Integration with ceviche challenges to test the optimization">
+<meta property="og:site-name" content="Inverse Design">
+<meta name="twitter:title" content="Inverse Design - Ceviche Challenges">
+<meta name="twitter:description" content="Integration with ceviche challenges to test the optimization">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Inverse Design</span>
+    </a>
+  </div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Ceviche Challenges</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">Inverse Design</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">notebooks</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/utils.html" class="sidebar-item-text sidebar-link">Utils</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/brushes.html" class="sidebar-item-text sidebar-link">Brushes</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/design.html" class="sidebar-item-text sidebar-link">Design</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/conditional_generator.html" class="sidebar-item-text sidebar-link">Conditional Generator</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/direct_optimization.html" class="sidebar-item-text sidebar-link">Direct Optimization</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/naive_inverse_design.html" class="sidebar-item-text sidebar-link">Naive Inverse Design</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/inverse_design.html" class="sidebar-item-text sidebar-link">Inverse Design</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/naive_generator.html" class="sidebar-item-text sidebar-link">Naive Generator</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/local_generator.html" class="sidebar-item-text sidebar-link">Local Generator</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/inverse_design_local.html" class="sidebar-item-text sidebar-link">Inverse Design Local</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ceviche_challenges.html" class="sidebar-item-text sidebar-link active">Ceviche Challenges</a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Ceviche Challenges</h1>
+</div>
+
+<div>
+  <div class="description">
+    Integration with ceviche challenges to test the optimization
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-02-08T11:57:00.439990Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-02-08T11:57:00.439673Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-02-08T11:57:03.023266Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-02-08T11:57:03.022545Z&quot;}" data-papermill="{&quot;duration&quot;:2.589171,&quot;end_time&quot;:&quot;2023-02-08T11:57:03.025375&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2023-02-08T11:57:00.436204&quot;,&quot;status&quot;:&quot;completed&quot;}" data-tags="[]" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> ceviche_challenges</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ceviche_challenges <span class="im">import</span> units <span class="im">as</span> u</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> ceviche</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> inverse_design.brushes <span class="im">import</span> notched_square_brush, circular_brush</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> inverse_design.conditional_generator <span class="im">import</span> (</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    new_latent_design, transform</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tqdm.notebook <span class="im">import</span> trange</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> autograd</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> autograd.numpy <span class="im">as</span> npa</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-02-08T11:57:03.033882Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-02-08T11:57:03.033483Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-02-08T11:57:03.069178Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-02-08T11:57:03.068375Z&quot;}" data-papermill="{&quot;duration&quot;:0.043673,&quot;end_time&quot;:&quot;2023-02-08T11:57:03.071520&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2023-02-08T11:57:03.027847&quot;,&quot;status&quot;:&quot;completed&quot;}" data-tags="[]" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> jax</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> jax.numpy <span class="im">as</span> jnp</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> javiche <span class="im">import</span> jaxit</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pylab <span class="im">as</span> plt</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> inverse_design.local_generator <span class="im">import</span> generate_feasible_design_mask</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> jax.example_libraries.optimizers <span class="im">import</span> adam</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-02-08T11:57:03.080441Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-02-08T11:57:03.079971Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-02-08T11:57:03.089503Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-02-08T11:57:03.088808Z&quot;}" data-papermill="{&quot;duration&quot;:0.017137,&quot;end_time&quot;:&quot;2023-02-08T11:57:03.091104&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2023-02-08T11:57:03.073967&quot;,&quot;status&quot;:&quot;completed&quot;}" data-tags="[]" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>spec <span class="op">=</span> ceviche_challenges.waveguide_bend.prefabs.waveguide_bend_2umx2um_spec(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  wg_width<span class="op">=</span><span class="dv">400</span><span class="op">*</span>u.nm, variable_region_size<span class="op">=</span>(<span class="dv">1600</span><span class="op">*</span>u.nm, <span class="dv">1600</span><span class="op">*</span>u.nm), cladding_permittivity<span class="op">=</span><span class="fl">2.25</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>params <span class="op">=</span> ceviche_challenges.waveguide_bend.prefabs.waveguide_bend_sim_params(resolution <span class="op">=</span> <span class="dv">25</span> <span class="op">*</span> u.nm)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> ceviche_challenges.waveguide_bend.model.WaveguideBendModel(params, spec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-02-08T11:57:03.097230Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-02-08T11:57:03.096824Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-02-08T11:57:03.101022Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-02-08T11:57:03.100317Z&quot;}" data-papermill="{&quot;duration&quot;:0.009432,&quot;end_time&quot;:&quot;2023-02-08T11:57:03.102896&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2023-02-08T11:57:03.093464&quot;,&quot;status&quot;:&quot;completed&quot;}" data-tags="[]" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> forward(latent_weights, brush):</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    latent_t <span class="op">=</span> transform(latent_weights, brush) <span class="co">#.reshape((Nx, Ny))</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    design_mask <span class="op">=</span> generate_feasible_design_mask(latent_t, </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>      brush, verbose<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    design <span class="op">=</span> (design_mask<span class="op">+</span><span class="fl">1.0</span>)<span class="op">/</span><span class="fl">2.0</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> design</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-02-08T11:57:03.112944Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-02-08T11:57:03.112579Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-02-08T11:57:03.429835Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-02-08T11:57:03.429135Z&quot;}" data-papermill="{&quot;duration&quot;:0.326969,&quot;end_time&quot;:&quot;2023-02-08T11:57:03.432182&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2023-02-08T11:57:03.105213&quot;,&quot;status&quot;:&quot;completed&quot;}" data-tags="[]" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>brush <span class="op">=</span> circular_brush(<span class="dv">5</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>latent <span class="op">=</span> new_latent_design(model.design_variable_shape, bias<span class="op">=</span><span class="fl">0.1</span>, r<span class="op">=</span><span class="dv">1</span>, r_scale<span class="op">=</span><span class="fl">1e-3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>No GPU/TPU found, falling back to CPU. (Set TF_CPP_MIN_LOG_LEVEL=0 and rerun for more info.)</code></pre>
+</div>
+</div>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-02-08T11:57:03.440474Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-02-08T11:57:03.438971Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-02-08T11:57:03.445777Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-02-08T11:57:03.445206Z&quot;}" data-papermill="{&quot;duration&quot;:0.012672,&quot;end_time&quot;:&quot;2023-02-08T11:57:03.447528&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2023-02-08T11:57:03.434856&quot;,&quot;status&quot;:&quot;completed&quot;}" data-tags="[]" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="at">@jaxit</span>()</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> inner_loss_fn(design):</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    s_params, fields <span class="op">=</span> model.simulate(design)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    s11 <span class="op">=</span> npa.<span class="bu">abs</span>(s_params[:, <span class="dv">0</span>, <span class="dv">0</span>])</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    s21 <span class="op">=</span> npa.<span class="bu">abs</span>(s_params[:, <span class="dv">0</span>, <span class="dv">1</span>])</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> debug_fields</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    debug_fields <span class="op">=</span> fields</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> debug_design</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    debug_design <span class="op">=</span> design</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> npa.mean(s11) <span class="op">-</span> npa.mean(s21)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> loss_fn(latent):</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    design <span class="op">=</span> forward(latent, brush)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> inner_loss_fn(design)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-02-08T11:57:03.454692Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-02-08T11:57:03.454240Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-02-08T11:57:03.458464Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-02-08T11:57:03.457894Z&quot;}" data-papermill="{&quot;duration&quot;:0.011224,&quot;end_time&quot;:&quot;2023-02-08T11:57:03.461286&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2023-02-08T11:57:03.450062&quot;,&quot;status&quot;:&quot;completed&quot;}" data-tags="[]" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of epochs in the optimization</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>Nsteps <span class="op">=</span> <span class="dv">150</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Step size for the Adam optimizer</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> step_size(idx):</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">"""reducing the stepsize linearly for Nsteps (stabilize afterwards just in case)"""</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  start <span class="op">=</span> <span class="fl">0.1</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  stop <span class="op">=</span> <span class="fl">5e-3</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> start<span class="op">*</span>(stop<span class="op">/</span>start)<span class="op">**</span>(idx<span class="op">/</span>Nsteps)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>step_size <span class="op">=</span> <span class="fl">0.01</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-02-08T11:57:03.475599Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-02-08T11:57:03.475330Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-02-08T11:57:03.480430Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-02-08T11:57:03.479842Z&quot;}" data-papermill="{&quot;duration&quot;:0.016729,&quot;end_time&quot;:&quot;2023-02-08T11:57:03.482975&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2023-02-08T11:57:03.466246&quot;,&quot;status&quot;:&quot;completed&quot;}" data-tags="[]" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> visualize_latent(latent):</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">global</span> debug_design, debug_fields</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  design <span class="op">=</span> forward(latent, brush)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  s_params, fields <span class="op">=</span> model.simulate(design)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  debug_design <span class="op">=</span> design</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  debug_fields <span class="op">=</span> fields</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  visualize_debug()</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> visualize_debug():</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="kw">global</span> debug_design, debug_fields</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="kw">not</span> <span class="bu">isinstance</span>(debug_fields, np.ndarray):</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    debug_fields <span class="op">=</span> debug_fields._value</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    debug_design <span class="op">=</span> debug_design._value</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  ceviche.viz.<span class="bu">abs</span>(np.squeeze(np.asarray(debug_fields)), model.density(np.asarray(debug_design)))</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>  plt.grid()</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>  plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-02-08T11:57:03.496584Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-02-08T11:57:03.496315Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-02-08T11:57:03.535302Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-02-08T11:57:03.534575Z&quot;}" data-papermill="{&quot;duration&quot;:0.052142,&quot;end_time&quot;:&quot;2023-02-08T11:57:03.537603&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2023-02-08T11:57:03.485461&quot;,&quot;status&quot;:&quot;completed&quot;}" data-tags="[]" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>grad_fn <span class="op">=</span> jax.grad(loss_fn)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>init_fn, update_fn, params_fn <span class="op">=</span> adam(step_size)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>state <span class="op">=</span> init_fn(latent) <span class="co">#.flatten()</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">#value_and_grad seems to have a problem. Figure out why!</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> step_fn(step, state):</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    latent <span class="op">=</span> params_fn(state) <span class="co"># we need autograd arrays here...</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    grads <span class="op">=</span> grad_fn(latent)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    loss <span class="op">=</span> loss_fn(latent)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">#loss = loss_fn(latent)</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    optim_state <span class="op">=</span> update_fn(step, grads, state)</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># optim_latent = params_fn(optim_state)</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># optim_latent = optim_latent/optim_latent.std()</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    visualize_debug()</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> loss, optim_state</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-02-08T11:57:03.546506Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-02-08T11:57:03.545197Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-02-08T11:57:05.788864Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-02-08T11:57:05.788196Z&quot;}" data-papermill="{&quot;duration&quot;:2.251281,&quot;end_time&quot;:&quot;2023-02-08T11:57:05.791669&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2023-02-08T11:57:03.540388&quot;,&quot;status&quot;:&quot;completed&quot;}" data-tags="[]" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>latent <span class="op">=</span> params_fn(state)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>visualize_latent(latent)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-11-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-02-08T11:57:05.807492Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-02-08T11:57:05.807042Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-02-08T12:06:20.361835Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-02-08T12:06:20.361153Z&quot;}" data-papermill="{&quot;duration&quot;:554.56663,&quot;end_time&quot;:&quot;2023-02-08T12:06:20.364326&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2023-02-08T11:57:05.797696&quot;,&quot;status&quot;:&quot;completed&quot;}" data-tags="[]" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>range_ <span class="op">=</span> trange(Nsteps)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>losses <span class="op">=</span> np.ndarray(Nsteps)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> step <span class="kw">in</span> range_:</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    loss, state <span class="op">=</span> step_fn(step, state)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    losses[step] <span class="op">=</span> loss</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    range_.set_postfix(loss<span class="op">=</span><span class="bu">float</span>(loss))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<script type="application/vnd.jupyter.widget-view+json">
+{"model_id":"6625e5e18e05439ebedd276a8e26a681","version_major":2,"version_minor":0}
+</script>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-2.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-3.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-4.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-5.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-6.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-7.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-8.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-9.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-10.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-11.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-12.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-13.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-14.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-15.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-16.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-17.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-18.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-19.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-20.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-21.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-22.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-23.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-24.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-25.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-26.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-27.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-28.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-29.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-30.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-31.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-32.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-33.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-34.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-35.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-36.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-37.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-38.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-39.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-40.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-41.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-42.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-43.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-44.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-45.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-46.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-47.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-48.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-49.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-50.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-51.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-52.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-53.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-54.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-55.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-56.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-57.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-58.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-59.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-60.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-61.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-62.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-63.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-64.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-65.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-66.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-67.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-68.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-69.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-70.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-71.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-72.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-73.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-74.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-75.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-76.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-77.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-78.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-79.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-80.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-81.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-82.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-83.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-84.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-85.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-86.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-87.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-88.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-89.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-90.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-91.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-92.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-93.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-94.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-95.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-96.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-97.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-98.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-99.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-100.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-101.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-102.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-103.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-104.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-105.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-106.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-107.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-108.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-109.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-110.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-111.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-112.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-113.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-114.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-115.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-116.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-117.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-118.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-119.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-120.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-121.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-122.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-123.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-124.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-125.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-126.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-127.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-128.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-129.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-130.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-131.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-132.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-133.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-134.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-135.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-136.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-137.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-138.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-139.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-140.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-141.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-142.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-143.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-144.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-145.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-146.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-147.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-148.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-149.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-150.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-12-output-151.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-02-08T12:06:21.019912Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-02-08T12:06:21.018944Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-02-08T12:06:22.151216Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-02-08T12:06:22.150506Z&quot;}" data-papermill="{&quot;duration&quot;:1.459336,&quot;end_time&quot;:&quot;2023-02-08T12:06:22.153631&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2023-02-08T12:06:20.694295&quot;,&quot;status&quot;:&quot;completed&quot;}" data-tags="[]" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>latent <span class="op">=</span> params_fn(state)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>design <span class="op">=</span> forward(latent, brush)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>s_params, fields <span class="op">=</span> model.simulate(design)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>epsr <span class="op">=</span> model.epsilon_r(design)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>ceviche.viz.<span class="bu">abs</span>(np.squeeze(fields), model.density(design))</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>plt.grid()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="11_ceviche_challenges_files/figure-html/cell-13-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+
+
+
+</main> <!-- /main -->
+<script type="application/vnd.jupyter.widget-state+json">
+{"state":{"0399764e40a2465ba14335fae04776ca":{"model_module":"@jupyter-widgets/controls","model_module_version":"2.0.0","model_name":"ProgressStyleModel","state":{"_model_module":"@jupyter-widgets/controls","_model_module_version":"2.0.0","_model_name":"ProgressStyleModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"2.0.0","_view_name":"StyleView","bar_color":null,"description_width":""}},"3917ce845b3f43888b8b835051d5f34c":{"model_module":"@jupyter-widgets/controls","model_module_version":"2.0.0","model_name":"HTMLModel","state":{"_dom_classes":[],"_model_module":"@jupyter-widgets/controls","_model_module_version":"2.0.0","_model_name":"HTMLModel","_view_count":null,"_view_module":"@jupyter-widgets/controls","_view_module_version":"2.0.0","_view_name":"HTMLView","description":"","description_allow_html":false,"layout":"IPY_MODEL_e1fad8b2f59c4f9caaba0e9db3f93962","placeholder":"​","style":"IPY_MODEL_acc12305d0bf4012ae6527d903c547b5","tabbable":null,"tooltip":null,"value":"100%"}},"6625e5e18e05439ebedd276a8e26a681":{"model_module":"@jupyter-widgets/controls","model_module_version":"2.0.0","model_name":"HBoxModel","state":{"_dom_classes":[],"_model_module":"@jupyter-widgets/controls","_model_module_version":"2.0.0","_model_name":"HBoxModel","_view_count":null,"_view_module":"@jupyter-widgets/controls","_view_module_version":"2.0.0","_view_name":"HBoxView","box_style":"","children":["IPY_MODEL_3917ce845b3f43888b8b835051d5f34c","IPY_MODEL_f8ced19d0cc14cd885449b2214e90256","IPY_MODEL_720dfaf86ba84c779d75e56397691443"],"layout":"IPY_MODEL_8616fc993c0f4ddca38f6c9d479e3076","tabbable":null,"tooltip":null}},"720dfaf86ba84c779d75e56397691443":{"model_module":"@jupyter-widgets/controls","model_module_version":"2.0.0","model_name":"HTMLModel","state":{"_dom_classes":[],"_model_module":"@jupyter-widgets/controls","_model_module_version":"2.0.0","_model_name":"HTMLModel","_view_count":null,"_view_module":"@jupyter-widgets/controls","_view_module_version":"2.0.0","_view_name":"HTMLView","description":"","description_allow_html":false,"layout":"IPY_MODEL_b671436e4cfb4c2b854d7e7f13cb76f0","placeholder":"​","style":"IPY_MODEL_b05c659b7744487792b49cf67968792a","tabbable":null,"tooltip":null,"value":" 150/150 [09:14&lt;00:00,  2.48s/it, loss=-.604]"}},"8616fc993c0f4ddca38f6c9d479e3076":{"model_module":"@jupyter-widgets/base","model_module_version":"2.0.0","model_name":"LayoutModel","state":{"_model_module":"@jupyter-widgets/base","_model_module_version":"2.0.0","_model_name":"LayoutModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"2.0.0","_view_name":"LayoutView","align_content":null,"align_items":null,"align_self":null,"border_bottom":null,"border_left":null,"border_right":null,"border_top":null,"bottom":null,"display":null,"flex":null,"flex_flow":null,"grid_area":null,"grid_auto_columns":null,"grid_auto_flow":null,"grid_auto_rows":null,"grid_column":null,"grid_gap":null,"grid_row":null,"grid_template_areas":null,"grid_template_columns":null,"grid_template_rows":null,"height":null,"justify_content":null,"justify_items":null,"left":null,"margin":null,"max_height":null,"max_width":null,"min_height":null,"min_width":null,"object_fit":null,"object_position":null,"order":null,"overflow":null,"padding":null,"right":null,"top":null,"visibility":null,"width":null}},"acc12305d0bf4012ae6527d903c547b5":{"model_module":"@jupyter-widgets/controls","model_module_version":"2.0.0","model_name":"HTMLStyleModel","state":{"_model_module":"@jupyter-widgets/controls","_model_module_version":"2.0.0","_model_name":"HTMLStyleModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"2.0.0","_view_name":"StyleView","background":null,"description_width":"","font_size":null,"text_color":null}},"b05c659b7744487792b49cf67968792a":{"model_module":"@jupyter-widgets/controls","model_module_version":"2.0.0","model_name":"HTMLStyleModel","state":{"_model_module":"@jupyter-widgets/controls","_model_module_version":"2.0.0","_model_name":"HTMLStyleModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"2.0.0","_view_name":"StyleView","background":null,"description_width":"","font_size":null,"text_color":null}},"b671436e4cfb4c2b854d7e7f13cb76f0":{"model_module":"@jupyter-widgets/base","model_module_version":"2.0.0","model_name":"LayoutModel","state":{"_model_module":"@jupyter-widgets/base","_model_module_version":"2.0.0","_model_name":"LayoutModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"2.0.0","_view_name":"LayoutView","align_content":null,"align_items":null,"align_self":null,"border_bottom":null,"border_left":null,"border_right":null,"border_top":null,"bottom":null,"display":null,"flex":null,"flex_flow":null,"grid_area":null,"grid_auto_columns":null,"grid_auto_flow":null,"grid_auto_rows":null,"grid_column":null,"grid_gap":null,"grid_row":null,"grid_template_areas":null,"grid_template_columns":null,"grid_template_rows":null,"height":null,"justify_content":null,"justify_items":null,"left":null,"margin":null,"max_height":null,"max_width":null,"min_height":null,"min_width":null,"object_fit":null,"object_position":null,"order":null,"overflow":null,"padding":null,"right":null,"top":null,"visibility":null,"width":null}},"e1fad8b2f59c4f9caaba0e9db3f93962":{"model_module":"@jupyter-widgets/base","model_module_version":"2.0.0","model_name":"LayoutModel","state":{"_model_module":"@jupyter-widgets/base","_model_module_version":"2.0.0","_model_name":"LayoutModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"2.0.0","_view_name":"LayoutView","align_content":null,"align_items":null,"align_self":null,"border_bottom":null,"border_left":null,"border_right":null,"border_top":null,"bottom":null,"display":null,"flex":null,"flex_flow":null,"grid_area":null,"grid_auto_columns":null,"grid_auto_flow":null,"grid_auto_rows":null,"grid_column":null,"grid_gap":null,"grid_row":null,"grid_template_areas":null,"grid_template_columns":null,"grid_template_rows":null,"height":null,"justify_content":null,"justify_items":null,"left":null,"margin":null,"max_height":null,"max_width":null,"min_height":null,"min_width":null,"object_fit":null,"object_position":null,"order":null,"overflow":null,"padding":null,"right":null,"top":null,"visibility":null,"width":null}},"ee0cd26a1d1b49359083d4da930da908":{"model_module":"@jupyter-widgets/base","model_module_version":"2.0.0","model_name":"LayoutModel","state":{"_model_module":"@jupyter-widgets/base","_model_module_version":"2.0.0","_model_name":"LayoutModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"2.0.0","_view_name":"LayoutView","align_content":null,"align_items":null,"align_self":null,"border_bottom":null,"border_left":null,"border_right":null,"border_top":null,"bottom":null,"display":null,"flex":null,"flex_flow":null,"grid_area":null,"grid_auto_columns":null,"grid_auto_flow":null,"grid_auto_rows":null,"grid_column":null,"grid_gap":null,"grid_row":null,"grid_template_areas":null,"grid_template_columns":null,"grid_template_rows":null,"height":null,"justify_content":null,"justify_items":null,"left":null,"margin":null,"max_height":null,"max_width":null,"min_height":null,"min_width":null,"object_fit":null,"object_position":null,"order":null,"overflow":null,"padding":null,"right":null,"top":null,"visibility":null,"width":null}},"f8ced19d0cc14cd885449b2214e90256":{"model_module":"@jupyter-widgets/controls","model_module_version":"2.0.0","model_name":"FloatProgressModel","state":{"_dom_classes":[],"_model_module":"@jupyter-widgets/controls","_model_module_version":"2.0.0","_model_name":"FloatProgressModel","_view_count":null,"_view_module":"@jupyter-widgets/controls","_view_module_version":"2.0.0","_view_name":"ProgressView","bar_style":"success","description":"","description_allow_html":false,"layout":"IPY_MODEL_ee0cd26a1d1b49359083d4da930da908","max":150,"min":0,"orientation":"horizontal","style":"IPY_MODEL_0399764e40a2465ba14335fae04776ca","tabbable":null,"tooltip":null,"value":150}}},"version_major":2,"version_minor":0}
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

@@ -1,0 +1,1562 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.335">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="A generator that implemented based on scipy.ndimage">
+
+<title>Inverse Design - Naive Generator</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+<meta property="og:title" content="Inverse Design - Naive Generator">
+<meta property="og:description" content="A generator that implemented based on `scipy.ndimage`">
+<meta property="og:site-name" content="Inverse Design">
+<meta name="twitter:title" content="Inverse Design - Naive Generator">
+<meta name="twitter:description" content="A generator that implemented based on `scipy.ndimage`">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Inverse Design</span>
+    </a>
+  </div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Naive Generator</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">Inverse Design</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">notebooks</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/utils.html" class="sidebar-item-text sidebar-link">Utils</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/brushes.html" class="sidebar-item-text sidebar-link">Brushes</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/design.html" class="sidebar-item-text sidebar-link">Design</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/conditional_generator.html" class="sidebar-item-text sidebar-link">Conditional Generator</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/direct_optimization.html" class="sidebar-item-text sidebar-link">Direct Optimization</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/naive_inverse_design.html" class="sidebar-item-text sidebar-link">Naive Inverse Design</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/inverse_design.html" class="sidebar-item-text sidebar-link">Inverse Design</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/naive_generator.html" class="sidebar-item-text sidebar-link active">Naive Generator</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/local_generator.html" class="sidebar-item-text sidebar-link">Local Generator</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/inverse_design_local.html" class="sidebar-item-text sidebar-link">Inverse Design Local</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ceviche_challenges.html" class="sidebar-item-text sidebar-link">Ceviche Challenges</a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#generating-a-latent-space-representation" id="toc-generating-a-latent-space-representation" class="nav-link active" data-scroll-target="#generating-a-latent-space-representation">Generating a latent space representation</a></li>
+  <li><a href="#generating-the-brush" id="toc-generating-the-brush" class="nav-link" data-scroll-target="#generating-the-brush">Generating the brush</a></li>
+  <li><a href="#running-the-generator" id="toc-running-the-generator" class="nav-link" data-scroll-target="#running-the-generator">Running the Generator</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/flaport/inverse_design/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Naive Generator</h1>
+</div>
+
+<div>
+  <div class="description">
+    A generator that implemented based on <code>scipy.ndimage</code>
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-02-08T11:56:05.771565Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-02-08T11:56:05.771258Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-02-08T11:56:06.485427Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-02-08T11:56:06.484733Z&quot;}" data-papermill="{&quot;duration&quot;:0.725899,&quot;end_time&quot;:&quot;2023-02-08T11:56:06.487825&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2023-02-08T11:56:05.761926&quot;,&quot;status&quot;:&quot;completed&quot;}" data-tags="[]" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> scipy.ndimage</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="generating-a-latent-space-representation" class="level2">
+<h2 class="anchored" data-anchor-id="generating-a-latent-space-representation">Generating a latent space representation</h2>
+<p>To make it more “understandable” where material is placed we generate a slowly varying landscape by interpolation of a low resolution map.</p>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-02-08T11:56:06.497152Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-02-08T11:56:06.496548Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-02-08T11:56:06.883403Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-02-08T11:56:06.882722Z&quot;}" data-papermill="{&quot;duration&quot;:0.391831,&quot;end_time&quot;:&quot;2023-02-08T11:56:06.885146&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2023-02-08T11:56:06.493315&quot;,&quot;status&quot;:&quot;completed&quot;}" data-tags="[]" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>features <span class="op">=</span> <span class="dv">8</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>zoom <span class="op">=</span> <span class="dv">16</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>heatmap <span class="op">=</span> np.random.random((features,features))<span class="op">-</span><span class="fl">0.5</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>large_heatmap <span class="op">=</span> scipy.ndimage.zoom(heatmap, zoom)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>plt.imshow(large_heatmap)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"x"</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"y"</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>plt.grid()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="08_naive_generator_files/figure-html/cell-3-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="generating-the-brush" class="level2">
+<h2 class="anchored" data-anchor-id="generating-the-brush">Generating the brush</h2>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-02-08T11:56:06.905135Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-02-08T11:56:06.904853Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-02-08T11:56:07.252931Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-02-08T11:56:07.252306Z&quot;}" data-papermill="{&quot;duration&quot;:0.358135,&quot;end_time&quot;:&quot;2023-02-08T11:56:07.254957&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2023-02-08T11:56:06.896822&quot;,&quot;status&quot;:&quot;completed&quot;}" data-tags="[]" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>kernel_size<span class="op">=</span><span class="dv">9</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>brush <span class="op">=</span> np.ones((kernel_size, kernel_size))</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>brush[<span class="dv">0</span>,<span class="dv">0</span>] <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>brush[<span class="dv">0</span>,<span class="op">-</span><span class="dv">1</span>] <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>brush[<span class="op">-</span><span class="dv">1</span>,<span class="dv">0</span>] <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>brush[<span class="op">-</span><span class="dv">1</span>,<span class="op">-</span><span class="dv">1</span>] <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>nx, ny <span class="op">=</span> brush.shape</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>plt.imshow(brush)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> plt.gca()</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>ax.set_yticks(np.arange(nx)<span class="op">+</span><span class="fl">0.5</span>)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>ax.set_yticklabels([<span class="st">""</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(nx)])</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>ax.set_xticks(np.arange(ny)<span class="op">+</span><span class="fl">0.5</span>)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>ax.set_xticklabels([<span class="st">""</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(ny)])</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>ax.set_yticks(np.arange(nx), minor<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>ax.set_yticklabels([<span class="ss">f"</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(nx)], minor<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>ax.set_xticks(np.arange(ny), minor<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>ax.set_xticklabels([<span class="ss">f"</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(ny)], minor<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>plt.grid()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="08_naive_generator_files/figure-html/cell-4-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="running-the-generator" class="level2">
+<h2 class="anchored" data-anchor-id="running-the-generator">Running the Generator</h2>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-02-08T11:56:07.270762Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-02-08T11:56:07.270459Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-02-08T11:56:26.563561Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-02-08T11:56:26.562811Z&quot;}" data-papermill="{&quot;duration&quot;:19.299733,&quot;end_time&quot;:&quot;2023-02-08T11:56:26.565593&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2023-02-08T11:56:07.265860&quot;,&quot;status&quot;:&quot;completed&quot;}" data-tags="[]" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> dilate(img, brush):</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> time_dilate</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    time_dilate <span class="op">-=</span> time.process_time() </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    dil <span class="op">=</span> scipy.ndimage.morphology.binary_dilation(img, brush)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    time_dilate <span class="op">+=</span> time.process_time() </span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> dil</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> existing_pixels(touches, brush):</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> dilate(touches, brush)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> impossible_touches(existing_other, brush):</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> dilate(existing_other, brush)</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> valid_touches(impossible, touches):</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.logical_and(np.logical_not(impossible), np.logical_not(touches))</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> possible_pixels(valid, touches, brush):</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    possible_touches <span class="op">=</span> np.logical_or(touches, valid)</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> dilate(possible_touches, brush)</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> required_pixels(existing, possible_other):</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.logical_and(np.logical_not(existing), np.logical_not(possible_other))</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> resolving_touches(required, valid, brush):</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.logical_and(dilate(required, brush), valid)</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> free_touches(possible_other, existing_other, valid, brush):</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>    dilated <span class="op">=</span> dilate(np.logical_or(possible_other, existing_other), brush)</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.logical_and(np.logical_not(dilated), valid)</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> select_single(s_valid, v_valid, s_suggest, v_suggest, brush, t_s, t_v):</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>    s_weights <span class="op">=</span> scipy.ndimage.convolve(s_suggest, brush)</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>    v_weights <span class="op">=</span> <span class="op">-</span>scipy.ndimage.convolve(v_suggest, brush)</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>    s_weights[np.logical_not(s_valid)] <span class="op">=</span> np.nan</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>    v_weights[np.logical_not(v_valid)] <span class="op">=</span> np.nan</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>    max_s <span class="op">=</span> max_v <span class="op">=</span> <span class="op">-</span>np.inf</span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> s_valid.<span class="bu">any</span>():</span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>        max_pos_s <span class="op">=</span> np.nanargmax(s_weights)</span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>        max_s <span class="op">=</span> s_weights.flat[max_pos_s]</span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> v_valid.<span class="bu">any</span>():</span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>        max_pos_v <span class="op">=</span> np.nanargmax(v_weights)</span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>        max_v <span class="op">=</span> v_weights.flat[max_pos_v]</span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>  max_s <span class="op">&gt;</span> max_v:</span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>        t_s.flat[max_pos_s] <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>        t_v.flat[max_pos_v] <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> t_s, t_v</span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>s_suggest <span class="op">=</span> large_heatmap.copy()</span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>v_suggest <span class="op">=</span> large_heatmap.copy()</span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>t_s <span class="op">=</span> np.zeros_like(s_suggest).astype(<span class="bu">bool</span>)</span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>t_v <span class="op">=</span> t_s.copy()</span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a>time_update <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a>time_select <span class="op">=</span> <span class="dv">0</span> </span>
+<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a>time_dilate <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>time_existing <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a>time_impossible <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>time_valid <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a>time_possible <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a>time_required <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a>time_resolving <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a>time_free <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a>debug <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> log(<span class="op">*</span>args):</span>
+<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> debug:</span>
+<span id="cb4-73"><a href="#cb4-73" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="op">*</span>args)</span>
+<span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-75"><a href="#cb4-75" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10000</span>):</span>
+<span id="cb4-76"><a href="#cb4-76" aria-hidden="true" tabindex="-1"></a>    time_update <span class="op">-=</span> time.process_time() </span>
+<span id="cb4-77"><a href="#cb4-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-78"><a href="#cb4-78" aria-hidden="true" tabindex="-1"></a>    time_existing <span class="op">-=</span> time.process_time() </span>
+<span id="cb4-79"><a href="#cb4-79" aria-hidden="true" tabindex="-1"></a>    p_s_existing <span class="op">=</span> existing_pixels(t_s, brush)</span>
+<span id="cb4-80"><a href="#cb4-80" aria-hidden="true" tabindex="-1"></a>    p_v_existing <span class="op">=</span> existing_pixels(t_v, brush)</span>
+<span id="cb4-81"><a href="#cb4-81" aria-hidden="true" tabindex="-1"></a>    time_existing <span class="op">+=</span> time.process_time() </span>
+<span id="cb4-82"><a href="#cb4-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-83"><a href="#cb4-83" aria-hidden="true" tabindex="-1"></a>    s_suggest[p_s_existing] <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb4-84"><a href="#cb4-84" aria-hidden="true" tabindex="-1"></a>    v_suggest[p_v_existing] <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb4-85"><a href="#cb4-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-86"><a href="#cb4-86" aria-hidden="true" tabindex="-1"></a>    time_impossible <span class="op">-=</span> time.process_time() </span>
+<span id="cb4-87"><a href="#cb4-87" aria-hidden="true" tabindex="-1"></a>    t_s_impossible <span class="op">=</span> impossible_touches(p_v_existing, brush)</span>
+<span id="cb4-88"><a href="#cb4-88" aria-hidden="true" tabindex="-1"></a>    t_v_impossible <span class="op">=</span> impossible_touches(p_s_existing, brush)</span>
+<span id="cb4-89"><a href="#cb4-89" aria-hidden="true" tabindex="-1"></a>    time_impossible <span class="op">+=</span> time.process_time() </span>
+<span id="cb4-90"><a href="#cb4-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-91"><a href="#cb4-91" aria-hidden="true" tabindex="-1"></a>    time_valid <span class="op">-=</span> time.process_time() </span>
+<span id="cb4-92"><a href="#cb4-92" aria-hidden="true" tabindex="-1"></a>    t_s_valid <span class="op">=</span> valid_touches(t_s_impossible, t_s)</span>
+<span id="cb4-93"><a href="#cb4-93" aria-hidden="true" tabindex="-1"></a>    t_v_valid <span class="op">=</span> valid_touches(t_v_impossible, t_v)</span>
+<span id="cb4-94"><a href="#cb4-94" aria-hidden="true" tabindex="-1"></a>    time_valid <span class="op">+=</span> time.process_time() </span>
+<span id="cb4-95"><a href="#cb4-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-96"><a href="#cb4-96" aria-hidden="true" tabindex="-1"></a>    time_possible <span class="op">-=</span> time.process_time() </span>
+<span id="cb4-97"><a href="#cb4-97" aria-hidden="true" tabindex="-1"></a>    p_s_possible <span class="op">=</span> possible_pixels(t_s_valid,t_s,brush)</span>
+<span id="cb4-98"><a href="#cb4-98" aria-hidden="true" tabindex="-1"></a>    p_v_possible <span class="op">=</span> possible_pixels(t_v_valid,t_v,brush)</span>
+<span id="cb4-99"><a href="#cb4-99" aria-hidden="true" tabindex="-1"></a>    time_possible <span class="op">+=</span> time.process_time() </span>
+<span id="cb4-100"><a href="#cb4-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-101"><a href="#cb4-101" aria-hidden="true" tabindex="-1"></a>    time_required <span class="op">-=</span> time.process_time() </span>
+<span id="cb4-102"><a href="#cb4-102" aria-hidden="true" tabindex="-1"></a>    p_s_required <span class="op">=</span> required_pixels(p_s_existing, p_v_possible)</span>
+<span id="cb4-103"><a href="#cb4-103" aria-hidden="true" tabindex="-1"></a>    p_v_required <span class="op">=</span> required_pixels(p_v_existing, p_s_possible)</span>
+<span id="cb4-104"><a href="#cb4-104" aria-hidden="true" tabindex="-1"></a>    time_required <span class="op">+=</span> time.process_time() </span>
+<span id="cb4-105"><a href="#cb4-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-106"><a href="#cb4-106" aria-hidden="true" tabindex="-1"></a>    time_resolving <span class="op">-=</span> time.process_time() </span>
+<span id="cb4-107"><a href="#cb4-107" aria-hidden="true" tabindex="-1"></a>    t_s_resolving <span class="op">=</span> resolving_touches(p_s_required, t_s_valid, brush)</span>
+<span id="cb4-108"><a href="#cb4-108" aria-hidden="true" tabindex="-1"></a>    t_v_resolving <span class="op">=</span> resolving_touches(p_v_required, t_v_valid, brush)</span>
+<span id="cb4-109"><a href="#cb4-109" aria-hidden="true" tabindex="-1"></a>    time_resolving <span class="op">+=</span> time.process_time() </span>
+<span id="cb4-110"><a href="#cb4-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-111"><a href="#cb4-111" aria-hidden="true" tabindex="-1"></a>    time_free <span class="op">-=</span> time.process_time() </span>
+<span id="cb4-112"><a href="#cb4-112" aria-hidden="true" tabindex="-1"></a>    t_s_free <span class="op">=</span> free_touches(p_v_possible, p_v_existing, t_s_valid, brush)</span>
+<span id="cb4-113"><a href="#cb4-113" aria-hidden="true" tabindex="-1"></a>    t_v_free <span class="op">=</span> free_touches(p_s_possible, p_s_existing, t_v_valid, brush)</span>
+<span id="cb4-114"><a href="#cb4-114" aria-hidden="true" tabindex="-1"></a>    time_free <span class="op">+=</span> time.process_time() </span>
+<span id="cb4-115"><a href="#cb4-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-116"><a href="#cb4-116" aria-hidden="true" tabindex="-1"></a>    time_update <span class="op">+=</span> time.process_time() </span>
+<span id="cb4-117"><a href="#cb4-117" aria-hidden="true" tabindex="-1"></a>    time_select <span class="op">-=</span> time.process_time() </span>
+<span id="cb4-118"><a href="#cb4-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-119"><a href="#cb4-119" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> t_s_free.<span class="bu">any</span>() <span class="kw">or</span> t_v_free.<span class="bu">any</span>():</span>
+<span id="cb4-120"><a href="#cb4-120" aria-hidden="true" tabindex="-1"></a>        log(<span class="ss">f"</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">: free"</span>)</span>
+<span id="cb4-121"><a href="#cb4-121" aria-hidden="true" tabindex="-1"></a>        t_s <span class="op">=</span> np.logical_or(t_s, t_s_free)</span>
+<span id="cb4-122"><a href="#cb4-122" aria-hidden="true" tabindex="-1"></a>        t_v <span class="op">=</span> np.logical_or(t_v, t_v_free)</span>
+<span id="cb4-123"><a href="#cb4-123" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> t_s_resolving.<span class="bu">any</span>() <span class="kw">or</span> t_v_resolving.<span class="bu">any</span>():</span>
+<span id="cb4-124"><a href="#cb4-124" aria-hidden="true" tabindex="-1"></a>        log(<span class="ss">f"</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">: resolving"</span>)</span>
+<span id="cb4-125"><a href="#cb4-125" aria-hidden="true" tabindex="-1"></a>        t_s, t_v <span class="op">=</span> select_single(t_s_resolving, t_v_resolving, s_suggest, v_suggest, brush, t_s, t_v)</span>
+<span id="cb4-126"><a href="#cb4-126" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> t_s_valid.<span class="bu">any</span>() <span class="kw">or</span> t_v_valid.<span class="bu">any</span>():</span>
+<span id="cb4-127"><a href="#cb4-127" aria-hidden="true" tabindex="-1"></a>        log(<span class="ss">f"</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">: valid"</span>)</span>
+<span id="cb4-128"><a href="#cb4-128" aria-hidden="true" tabindex="-1"></a>        t_s, t_v <span class="op">=</span> select_single(t_s_valid, t_v_valid, s_suggest, v_suggest, brush, t_s, t_v)</span>
+<span id="cb4-129"><a href="#cb4-129" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb4-130"><a href="#cb4-130" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"finished"</span>)</span>
+<span id="cb4-131"><a href="#cb4-131" aria-hidden="true" tabindex="-1"></a>        time_select <span class="op">+=</span> time.process_time() </span>
+<span id="cb4-132"><a href="#cb4-132" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span></span>
+<span id="cb4-133"><a href="#cb4-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-134"><a href="#cb4-134" aria-hidden="true" tabindex="-1"></a>    time_select <span class="op">+=</span> time.process_time() </span>
+<span id="cb4-135"><a href="#cb4-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-136"><a href="#cb4-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-137"><a href="#cb4-137" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize <span class="op">=</span> (<span class="dv">6</span>,<span class="dv">9</span>))</span>
+<span id="cb4-138"><a href="#cb4-138" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">321</span>)</span>
+<span id="cb4-139"><a href="#cb4-139" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Solid"</span>)</span>
+<span id="cb4-140"><a href="#cb4-140" aria-hidden="true" tabindex="-1"></a>plt.imshow(p_s_existing)</span>
+<span id="cb4-141"><a href="#cb4-141" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">322</span>)</span>
+<span id="cb4-142"><a href="#cb4-142" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Void"</span>)</span>
+<span id="cb4-143"><a href="#cb4-143" aria-hidden="true" tabindex="-1"></a>plt.imshow(p_v_existing)</span>
+<span id="cb4-144"><a href="#cb4-144" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">323</span>)</span>
+<span id="cb4-145"><a href="#cb4-145" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Solid Touches"</span>)</span>
+<span id="cb4-146"><a href="#cb4-146" aria-hidden="true" tabindex="-1"></a>plt.imshow(t_s)</span>
+<span id="cb4-147"><a href="#cb4-147" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">324</span>)</span>
+<span id="cb4-148"><a href="#cb4-148" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Void Touches"</span>)</span>
+<span id="cb4-149"><a href="#cb4-149" aria-hidden="true" tabindex="-1"></a>plt.imshow(t_v)</span>
+<span id="cb4-150"><a href="#cb4-150" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">325</span>)</span>
+<span id="cb4-151"><a href="#cb4-151" aria-hidden="true" tabindex="-1"></a>plt.imshow(large_heatmap)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/tmp/ipykernel_3779/3885273807.py:4: DeprecationWarning: Please use `binary_dilation` from the `scipy.ndimage` namespace, the `scipy.ndimage.morphology` namespace is deprecated.
+  dil = scipy.ndimage.morphology.binary_dilation(img, brush)</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0: valid
+1: valid
+2: valid
+3: resolving
+4: free
+5: valid
+6: free
+7: valid
+8: valid</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>9: valid
+10: valid
+11: resolving
+12: free
+13: valid
+14: valid
+15: valid
+16: valid
+17: free</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>18: valid
+19: valid
+20: resolving
+21: free
+22: valid
+23: valid
+24: resolving
+25: free</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>26: valid
+27: free
+28: valid
+29: valid
+30: valid
+31: resolving
+32: free
+33: valid
+34: valid</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>35: free
+36: resolving
+37: free
+38: valid
+39: free
+40: valid
+41: resolving</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>42: free
+43: resolving
+44: free
+45: valid
+46: valid
+47: valid
+48: free
+49: valid
+50: free</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>51: resolving
+52: free
+53: valid
+54: free
+55: valid
+56: resolving
+57: free
+58: valid</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>59: resolving
+60: free
+61: resolving
+62: free
+63: valid
+64: free
+65: resolving
+66: free
+67: resolving</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>68: free
+69: valid
+70: free
+71: valid
+72: resolving
+73: free
+74: resolving</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>75: free
+76: valid
+77: free
+78: valid
+79: free
+80: resolving
+81: free
+82: valid
+83: resolving
+84: free
+85: valid
+86: valid</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>87: free
+88: valid
+89: resolving
+90: free
+91: resolving
+92: free</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>93: valid
+94: free
+95: valid
+96: resolving
+97: free
+98: resolving
+99: free</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>100: resolving
+101: free
+102: valid
+103: free
+104: valid
+105: free
+106: valid
+107: valid
+108: free
+109: valid
+110: free</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>111: valid
+112: free
+113: valid
+114: resolving
+115: free
+116: resolving
+117: free
+118: valid
+119: valid
+120: resolving</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>121: free
+122: valid
+123: free
+124: valid
+125: free
+126: valid
+127: valid
+128: valid</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>129: free
+130: valid
+131: free
+132: valid
+133: free
+134: valid
+135: free
+136: valid
+137: free
+138: resolving
+139: free</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>140: valid
+141: free
+142: resolving
+143: free
+144: valid
+145: valid
+146: free
+147: valid
+148: valid
+149: free
+150: resolving</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>151: free
+152: resolving
+153: free
+154: valid
+155: free
+156: valid
+157: free
+158: resolving</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>159: free
+160: valid
+161: valid
+162: valid
+163: free
+164: resolving
+165: free
+166: valid
+167: free
+168: valid</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>169: free
+170: valid
+171: free
+172: valid
+173: free
+174: valid
+175: resolving</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>176: free
+177: valid
+178: free
+179: resolving
+180: free
+181: valid
+182: free</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>183: valid
+184: valid
+185: free
+186: valid
+187: free
+188: valid
+189: free
+190: resolving
+191: free
+192: resolving</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>193: free
+194: resolving
+195: free
+196: valid
+197: free
+198: valid
+199: free
+200: valid</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>201: free
+202: valid
+203: free
+204: valid
+205: valid
+206: free
+207: valid
+208: free
+209: valid
+210: free</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>211: valid
+212: resolving
+213: free
+214: valid
+215: free
+216: valid
+217: free</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>218: resolving
+219: free
+220: valid
+221: free
+222: valid
+223: free
+224: valid</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>225: free
+226: valid
+227: free
+228: valid
+229: resolving
+230: free
+231: resolving
+232: free
+233: resolving
+234: free</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>235: valid
+236: free
+237: resolving
+238: free
+239: resolving
+240: free</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>241: valid
+242: free
+243: valid
+244: free
+245: valid
+246: free
+247: resolving
+248: free</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>249: resolving
+250: free
+251: valid
+252: free
+253: valid
+254: free
+255: valid
+256: free</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>257: resolving
+258: free
+259: resolving
+260: free
+261: resolving
+262: resolving
+263: resolving
+264: free
+265: valid
+266: free
+267: valid
+268: free
+269: valid</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>270: free
+271: valid
+272: free
+273: valid
+274: free
+275: resolving
+276: free</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>277: valid
+278: free
+279: valid
+280: free
+281: valid
+282: free
+283: valid
+284: valid
+285: resolving
+286: free</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>287: resolving
+288: free
+289: valid
+290: free
+291: valid
+292: free
+293: valid
+294: free</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>295: valid
+296: free
+297: valid
+298: free
+299: resolving
+300: free
+301: valid</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>302: free
+303: valid
+304: free
+305: valid
+306: free
+307: valid
+308: free
+309: valid
+310: free
+311: valid</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>312: free
+313: valid
+314: free
+315: valid
+316: free
+317: valid
+318: free
+319: valid
+320: free
+321: resolving
+322: free
+323: resolving</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>324: free
+325: resolving
+326: resolving
+327: free
+328: resolving
+329: resolving
+330: resolving
+331: resolving
+332: resolving</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>333: resolving
+334: resolving
+335: resolving
+336: resolving
+337: resolving
+338: free
+339: valid
+340: free
+341: valid
+342: free
+343: valid
+344: free</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>345: valid
+346: free
+347: valid
+348: free
+349: valid
+350: free
+351: valid
+352: free
+353: valid
+354: free</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>355: valid
+356: free
+357: valid
+358: free
+359: valid
+360: free
+361: valid
+362: free
+363: valid
+364: free</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>365: valid
+366: free
+367: valid
+368: free
+369: valid
+370: free
+371: valid
+372: free
+373: valid
+374: free
+375: valid</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>376: free
+377: valid
+378: free
+379: valid
+380: free
+381: valid
+382: free
+383: valid
+384: free
+385: valid
+386: free
+387: valid</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>388: free
+389: resolving
+390: free
+391: resolving
+392: free
+393: resolving</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>394: free
+395: resolving
+396: free
+397: resolving
+398: free
+399: resolving
+400: resolving
+401: free
+402: resolving
+403: free
+404: valid
+405: free</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>406: valid
+407: free
+408: valid
+409: free
+410: valid
+411: free
+412: valid</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>413: free
+414: valid
+415: free
+416: resolving
+417: free
+418: resolving
+419: free</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>420: valid
+421: free
+422: valid
+423: free
+424: valid
+425: free
+426: valid
+427: free
+428: valid</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>429: free
+430: valid
+431: free
+432: valid
+433: free
+434: valid
+435: free</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>436: valid
+437: free
+438: valid
+439: free
+440: valid
+441: free
+442: valid</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>443: free
+444: valid
+445: free
+446: valid
+447: free
+448: valid
+449: free
+450: valid</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>451: free
+452: valid
+453: free
+454: valid
+455: free
+456: valid
+457: free
+458: valid
+459: free</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>460: valid
+461: free
+462: valid
+463: free
+464: valid
+465: free
+466: valid
+467: free</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>468: valid
+469: free
+470: valid
+471: free
+472: valid
+473: free</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>474: valid
+475: free
+476: valid
+477: free
+478: valid
+479: free
+480: valid</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>481: free
+482: valid
+483: free
+484: valid
+485: free
+486: valid
+487: free
+488: valid
+489: free</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>490: valid
+491: free
+492: valid
+493: free
+494: valid
+495: free
+496: valid
+497: free</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>498: valid
+499: free
+500: valid
+501: free
+502: valid
+503: free</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>504: valid
+505: free
+506: valid
+507: free
+508: valid
+509: free</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>510: valid
+511: free
+512: valid
+513: free
+514: valid
+515: free
+516: valid
+517: free
+518: valid</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>519: free
+520: resolving
+521: resolving
+522: resolving
+523: resolving
+524: resolving</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>525: resolving
+526: resolving
+527: valid
+528: free
+529: valid
+530: free</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>531: valid
+532: free
+533: valid
+534: free
+535: valid
+536: free
+537: valid
+538: free
+539: valid</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>540: free
+541: valid
+542: free
+543: valid
+544: free
+545: valid
+546: free
+547: valid
+548: free</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>549: valid
+550: free
+551: valid
+552: free
+553: valid
+554: free
+555: valid
+556: free
+557: valid</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>558: free
+559: valid
+560: free
+561: valid
+562: free
+563: valid
+564: free
+565: valid
+566: free
+567: valid
+568: free</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>569: valid
+570: free
+571: valid
+572: free
+573: valid
+574: free
+575: valid
+576: free
+577: valid</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>578: free
+579: valid
+580: free
+581: valid
+582: free
+583: valid
+584: free
+585: valid
+586: free
+587: valid</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>588: free
+589: valid
+590: free
+591: valid
+592: free
+593: valid
+594: free
+595: valid
+596: free
+597: valid</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>598: free
+599: valid
+600: free
+601: valid
+602: free
+603: valid
+604: free
+605: valid
+606: free</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>607: valid
+608: free
+609: valid
+610: free
+611: valid
+612: free
+613: valid
+614: free
+615: valid
+616: valid</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>617: free
+618: valid
+619: free
+620: valid
+621: free
+622: valid
+623: free
+624: valid
+625: free
+626: valid</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>627: free
+628: valid
+629: free
+630: valid
+631: free
+632: valid</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>633: free
+634: valid
+635: free
+636: valid
+637: free
+638: valid
+639: free
+640: valid
+641: free
+642: valid</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>643: free
+644: valid
+645: free
+646: valid
+647: free
+648: valid
+649: free
+650: valid</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>651: free
+652: valid
+653: free
+654: valid
+655: valid
+656: free
+657: valid</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>658: free
+659: valid
+660: free
+661: valid
+662: free
+663: valid
+664: free
+665: valid
+666: free
+667: valid</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>668: free
+669: valid
+670: free
+671: valid
+672: free
+673: valid
+674: free</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>675: valid
+676: free
+677: valid
+678: valid
+679: free
+680: valid
+681: free
+682: valid
+683: valid</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>684: free
+685: valid
+686: valid
+687: free
+688: valid
+689: free
+690: valid
+691: free
+692: valid</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>693: valid
+694: valid
+695: free
+696: valid
+697: free
+698: valid</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>699: free
+700: valid
+701: free
+702: valid
+703: free
+704: valid
+705: free
+706: valid
+707: valid
+708: valid</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>709: free
+710: valid
+711: valid
+712: free
+713: valid
+714: free
+715: valid
+716: free
+717: valid</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>718: free
+719: valid
+720: free
+721: valid
+722: valid
+723: free
+724: valid
+725: free
+726: valid</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>727: valid
+728: valid
+729: valid
+730: valid
+finished</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<pre><code>&lt;matplotlib.image.AxesImage at 0x7fa217e54f40&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="08_naive_generator_files/figure-html/cell-5-output-88.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-02-08T11:56:26.594809Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-02-08T11:56:26.594482Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-02-08T11:56:26.598913Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-02-08T11:56:26.598302Z&quot;}" data-papermill="{&quot;duration&quot;:0.027246,&quot;end_time&quot;:&quot;2023-02-08T11:56:26.610931&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2023-02-08T11:56:26.583685&quot;,&quot;status&quot;:&quot;completed&quot;}" data-tags="[]" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb92"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"""</span></span>
+<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a><span class="sc">{</span>time_update <span class="op">=</span> <span class="sc">}</span></span>
+<span id="cb92-3"><a href="#cb92-3" aria-hidden="true" tabindex="-1"></a><span class="sc">{</span>time_select <span class="op">=</span> <span class="sc">}</span></span>
+<span id="cb92-4"><a href="#cb92-4" aria-hidden="true" tabindex="-1"></a><span class="sc">{</span>time_dilate <span class="op">=</span> <span class="sc">}</span></span>
+<span id="cb92-5"><a href="#cb92-5" aria-hidden="true" tabindex="-1"></a><span class="sc">{</span>time_existing <span class="op">=</span> <span class="sc">}</span></span>
+<span id="cb92-6"><a href="#cb92-6" aria-hidden="true" tabindex="-1"></a><span class="sc">{</span>time_impossible <span class="op">=</span> <span class="sc">}</span></span>
+<span id="cb92-7"><a href="#cb92-7" aria-hidden="true" tabindex="-1"></a><span class="sc">{</span>time_valid <span class="op">=</span> <span class="sc">}</span></span>
+<span id="cb92-8"><a href="#cb92-8" aria-hidden="true" tabindex="-1"></a><span class="sc">{</span>time_possible <span class="op">=</span> <span class="sc">}</span></span>
+<span id="cb92-9"><a href="#cb92-9" aria-hidden="true" tabindex="-1"></a><span class="sc">{</span>time_required <span class="op">=</span> <span class="sc">}</span></span>
+<span id="cb92-10"><a href="#cb92-10" aria-hidden="true" tabindex="-1"></a><span class="sc">{</span>time_resolving <span class="op">=</span> <span class="sc">}</span></span>
+<span id="cb92-11"><a href="#cb92-11" aria-hidden="true" tabindex="-1"></a><span class="sc">{</span>time_free <span class="op">=</span> <span class="sc">}</span><span class="ss">"""</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+time_update = 10.628310700000034
+time_select = 1.5778839999999956
+time_dilate = 10.478393900000068
+time_existing = 2.5290061999999818
+time_impossible = 1.9178835000000127
+time_valid = 0.019353499999992252
+time_possible = 1.617833300000024
+time_required = 0.016935700000008325
+time_resolving = 3.416029200000027
+time_free = 1.0632920999999982</code></pre>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
