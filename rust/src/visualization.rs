@@ -1,5 +1,5 @@
-use super::array::k;
 use super::brushes::Brush;
+use super::debug::Profiler;
 use super::design::Design;
 use super::status::Status;
 use itertools::izip;
@@ -49,7 +49,7 @@ fn visualize_arrays<T: Copy, F: Fn(T) -> Color>(
         for j_ in 0..n_ {
             let p = j_ / (n + 1);
             let j = j_ % (n + 1);
-            let b = if j < n { arrays[p][k(i, j, n)] } else { empty };
+            let b = if j < n { arrays[p][i * n + j] } else { empty };
             full.push(b);
         }
     }
@@ -205,7 +205,9 @@ pub fn test_visualization() {
 
 impl Design {
     pub fn design_view(&self) -> Vec<Status> {
-        self.void
+        let profiler = Profiler::start("design_view");
+        let result = self
+            .void
             .iter()
             .zip(self.solid.iter())
             .map(|(v, s)| {
@@ -217,17 +219,19 @@ impl Design {
                     Status::Unassigned
                 }
             })
-            .collect()
+            .collect();
+        profiler.stop();
+        return result;
     }
 
     pub fn void_pixel_view(&self) -> Vec<Status> {
-        izip!(
+        let profiler = Profiler::start("void_pixel_view");
+        let result = izip!(
             self.void_pixel_impossible.iter(),
             self.void_pixel_existing.iter(),
-            self.void_pixel_possible.iter(),
             self.void_pixel_required.iter(),
         )
-        .map(|(i, e, _, r)| {
+        .map(|(i, e, r)| {
             if *r {
                 Status::PixelRequired
             } else if *e {
@@ -238,17 +242,19 @@ impl Design {
                 Status::PixelPossible
             }
         })
-        .collect()
+        .collect();
+        profiler.stop();
+        return result;
     }
 
     pub fn solid_pixel_view(&self) -> Vec<Status> {
-        izip!(
+        let profiler = Profiler::start("solid_pixel_view");
+        let result = izip!(
             self.solid_pixel_impossible.iter(),
             self.solid_pixel_existing.iter(),
-            self.solid_pixel_possible.iter(),
             self.solid_pixel_required.iter(),
         )
-        .map(|(i, e, _, r)| {
+        .map(|(i, e, r)| {
             if *r {
                 Status::PixelRequired
             } else if *e {
@@ -259,60 +265,54 @@ impl Design {
                 Status::PixelPossible
             }
         })
-        .collect()
+        .collect();
+        profiler.stop();
+        return result;
     }
 
     pub fn void_touches_view(&self) -> Vec<Status> {
-        izip!(
+        let profiler = Profiler::start("void_touches_view");
+        let result = izip!(
             self.void_touch_required.iter(),
             self.void_touch_invalid.iter(),
             self.void_touch_existing.iter(),
-            self.void_touch_valid.iter(),
-            self.void_touch_free.iter(),
-            self.void_touch_resolving.iter(),
         )
-        .map(|(r, i, e, _, f, g)| {
+        .map(|(r, i, e)| {
             if *e {
                 Status::TouchExisting
-            } else if *g {
-                Status::TouchResolving
             } else if *r {
                 Status::TouchRequired
-            } else if *f {
-                Status::TouchFree
             } else if *i {
                 Status::TouchInvalid
             } else {
                 Status::TouchValid
             }
         })
-        .collect()
+        .collect();
+        profiler.stop();
+        return result;
     }
 
     pub fn solid_touches_view(&self) -> Vec<Status> {
-        izip!(
+        let profiler = Profiler::start("solid_touches_view");
+        let result = izip!(
             self.solid_touch_required.iter(),
             self.solid_touch_invalid.iter(),
             self.solid_touch_existing.iter(),
-            self.solid_touch_valid.iter(),
-            self.solid_touch_free.iter(),
-            self.solid_touch_resolving.iter(),
         )
-        .map(|(r, i, e, _, f, g)| {
+        .map(|(r, i, e)| {
             if *e {
                 Status::TouchExisting
-            } else if *g {
-                Status::TouchResolving
             } else if *r {
                 Status::TouchRequired
-            } else if *f {
-                Status::TouchFree
             } else if *i {
                 Status::TouchInvalid
             } else {
                 Status::TouchValid
             }
         })
-        .collect()
+        .collect();
+        profiler.stop();
+        return result;
     }
 }

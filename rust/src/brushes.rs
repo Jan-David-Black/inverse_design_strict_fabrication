@@ -1,5 +1,4 @@
-use super::array::{k, new_array};
-use super::debug::Profiler;
+use super::array::new_array;
 
 pub fn test_brushes() {
     let brush = Brush::notched_square(5, 1);
@@ -54,7 +53,7 @@ impl Brush {
             if (size_j as i32) <= j {
                 continue;
             }
-            let idx = k(i as usize, j as usize, size_j);
+            let idx = (i as usize) * size_j + j as usize;
             mask[idx] = true;
         }
         return mask;
@@ -105,7 +104,7 @@ pub fn compute_big_brush(brush: &Brush) -> Brush {
     let mut new_brush = Vec::new();
     for i in 0..m_ {
         for j in 0..n_ {
-            if mask[k(i, j, n_)] {
+            if mask[i * n_ + j] {
                 let i = (i as i32) - (m_ as i32) / 2;
                 let j = (j as i32) - (n_ as i32) / 2;
                 new_brush.push((i + 1, j + 1)); // yes, +1
@@ -129,10 +128,11 @@ pub fn compute_very_big_square_brush(brush: &Brush) -> Brush {
         }
     }
 
-    return Brush {
+    let brush = Brush {
         brush: new_brush,
         shape: (m_, n_),
     };
+    return brush;
 }
 
 pub fn compute_big_square_brush(brush: &Brush) -> Brush {
@@ -157,12 +157,10 @@ pub fn apply_touch<T: Copy>(
     pos: (usize, usize),
     value: T,
 ) {
-    let profiler = Profiler::start("apply_touch");
     let (_, size_j) = shape;
     let (m, n) = pos;
-    let idx = k(m, n, size_j);
+    let idx = m * size_j + n;
     array[idx] = value;
-    profiler.stop();
 }
 
 pub fn multi_apply_touch<T: Copy>(
@@ -171,14 +169,12 @@ pub fn multi_apply_touch<T: Copy>(
     pos: (usize, usize),
     values: &Vec<T>,
 ) {
-    let profiler = Profiler::start("apply_touch");
     let (_, size_j) = shape;
     let (m, n) = pos;
-    let idx = k(m, n, size_j);
+    let idx = m * size_j + n;
     for (array, value) in arrays.iter_mut().zip(values.into_iter()) {
         array[idx] = *value;
     }
-    profiler.stop();
 }
 
 pub fn apply_brush<T: Copy>(
@@ -188,7 +184,6 @@ pub fn apply_brush<T: Copy>(
     pos: (usize, usize),
     value: T,
 ) {
-    let profiler = Profiler::start("apply_brush");
     let (size_i, size_j) = shape;
     let (m, n) = pos;
     let m = m as i32;
@@ -208,10 +203,9 @@ pub fn apply_brush<T: Copy>(
         if (size_j as i32) <= j {
             continue;
         }
-        let idx = k(i as usize, j as usize, size_j);
+        let idx = (i as usize) * size_j + j as usize;
         array[idx] = value;
     }
-    profiler.stop();
 }
 
 pub fn multi_apply_brush<T: Copy>(
@@ -221,7 +215,6 @@ pub fn multi_apply_brush<T: Copy>(
     pos: (usize, usize),
     values: &Vec<T>,
 ) {
-    let profiler = Profiler::start("multi_apply_brush");
     let (size_i, size_j) = shape;
     let (m, n) = pos;
     let m = m as i32;
@@ -241,12 +234,11 @@ pub fn multi_apply_brush<T: Copy>(
         if (size_j as i32) <= j {
             continue;
         }
-        let idx = k(i as usize, j as usize, size_j);
+        let idx = (i as usize) * size_j + j as usize;
         for (array, value) in arrays.iter_mut().zip(values.into_iter()) {
             array[idx] = *value;
         }
     }
-    profiler.stop();
 }
 
 fn notched_square_brush(width: usize, notch: usize) -> Vec<(i32, i32)> {

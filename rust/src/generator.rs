@@ -1,5 +1,5 @@
 use super::array::read_f32;
-use super::brushes::{apply_touch, Brush};
+use super::brushes::Brush;
 use super::debug::{counter, Profiler};
 use super::design::Design;
 use std::mem::swap;
@@ -39,8 +39,6 @@ pub fn generate_feasible_design(
     let mut prev_idxs = vec![(m, n), (m, n)];
     let mut prev_indexer = 0;
     loop {
-        let loop_profiler = Profiler::start("loop_body");
-
         let ijv = void_indices.pop();
         let ijs = solid_indices.pop();
 
@@ -117,8 +115,6 @@ pub fn generate_feasible_design(
             swap(&mut solid_latent_t, &mut void_latent_t);
         }
 
-        loop_profiler.stop();
-
         //design.visualize();
 
         //if counter().gt(20) {
@@ -137,7 +133,7 @@ pub fn void_step(
 ) -> (Vec<(usize, usize)>, Vec<(usize, usize)>) {
     let (_, n) = design.shape;
     let (i, j) = pos;
-    if (!design.void_touch_valid[i * n + j]) | (design.void_touch_existing[i * n + j]) {
+    if (design.void_touch_invalid[i * n + j]) | (design.void_touch_existing[i * n + j]) {
         return (Vec::new(), Vec::new());
     }
     let (required_pixels, resolving_touches) = design.add_void_touch(pos);
@@ -152,6 +148,7 @@ pub fn resolve_required_void_pixels(
     is_solid_touch: bool,
     verbose: bool,
 ) {
+    let profiler = Profiler::start("resolving");
     let (_, n) = design.shape;
     loop {
         sort_indices_by_value(resolving_touches, &void_latent_t, design.shape);
@@ -181,27 +178,12 @@ pub fn resolve_required_void_pixels(
             }
         }
 
-        for pos in resolving_touches.iter() {
-            let mut found = false;
-            for new_pos in new_resolving_touches.iter() {
-                if pos == new_pos {
-                    found = true;
-                }
-            }
-            if !found {
-                apply_touch(design.shape, &mut design.void_touch_resolving, *pos, false);
-            }
-        }
-        new_resolving_touches = new_resolving_touches
-            .into_iter()
-            .filter(|(i, j)| design.void_touch_resolving[*i * n + *j])
-            .collect();
-
         swap(required_pixels, &mut new_required_pixels);
         swap(resolving_touches, &mut new_resolving_touches);
 
         sort_indices_by_value(resolving_touches, &void_latent_t, design.shape);
     }
+    profiler.stop();
 }
 
 pub fn sort_indices_by_value(
