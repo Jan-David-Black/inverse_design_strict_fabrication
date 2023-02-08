@@ -122,7 +122,7 @@ def conditional_generator(latent_t, brush, verbose=False):
 # %% ../notebooks/04_conditional_generator.ipynb 15
 def generate_feasible_design(latent_t, brush, verbose=False, backend='auto'): # backend: 'auto', 'rust', 'python'
     try:
-        from inverse_design_rs import generate_feasible_design as generate_feasible_design_rs
+        from inverse_design_rs.inverse_design_rs import generate_feasible_design as generate_feasible_design_rs
         if backend == 'auto':
             backend = 'rust'
     except ImportError:
