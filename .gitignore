@@ -151,3 +151,5 @@ checklink/cookies.txt
 
 _docs/
 _proc/
+
+*/out/*.png

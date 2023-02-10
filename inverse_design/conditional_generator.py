@@ -180,7 +180,9 @@ def generate_feasible_design_mask_(latent_t, brush, backend='auto'):
 
 # %% ../notebooks/04_conditional_generator.ipynb 27
 @jax.custom_jvp
-def generate_feasible_design_mask(latent_t, brush):
+def generate_feasible_design_mask(latent_t, brush, border=None):
+    if border is not None:
+      latent_t += border*100
     design = generate_feasible_design(latent_t, brush, verbose=False)
     return design_mask(design)
 
