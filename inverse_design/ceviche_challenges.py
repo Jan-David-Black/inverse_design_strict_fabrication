@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['border_bias']
 
-# %% ../notebooks/11_ceviche_challenges.ipynb 14
+# %% ../notebooks/11_ceviche_challenges.ipynb 15
 import scipy.ndimage
 def border_bias(model):
   width = 5
