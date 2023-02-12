@@ -1,6 +1,7 @@
 from pkg_resources import parse_version
 from configparser import ConfigParser
 import setuptools, shlex
+import os
 assert parse_version(setuptools.__version__)>=parse_version('36.2')
 
 # note: all settings are in settings.ini; edit there, not here
@@ -29,6 +30,7 @@ if cfg.get('pip_requirements'): requirements += shlex.split(cfg.get('pip_require
 min_python = cfg['min_python']
 lic = licenses.get(cfg['license'].lower(), (cfg['license'], None))
 dev_requirements = (cfg.get('dev_requirements') or '').split()
+current_directory = os.path.dirname(os.path.abspath(__file__))
 
 setuptools.setup(
     name = cfg['lib_name'],
@@ -41,7 +43,7 @@ setuptools.setup(
     url = cfg['git_url'],
     packages = setuptools.find_packages(),
     include_package_data = True,
-    install_requires = requirements,
+    install_requires = requirements + [f"inverse_design_rs @ file://localhost/{current_directory}/rust#egg=inverse_design_rs"],
     extras_require={ 'dev': dev_requirements },
     dependency_links = cfg.get('dep_links','').split(),
     python_requires  = '>=' + cfg['min_python'],
