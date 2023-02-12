@@ -146,18 +146,26 @@ def select_single(s_valid, v_valid, state):
     v_weights[np.logical_not(v_valid)] = np.nan
 
     max_s = max_v = -np.inf
+    
+    tolerance = 1e-4
     if s_valid.any():
-        max_pos_s = np.nanargmax(s_weights)
-        max_s = s_weights.flat[max_pos_s]
+        max_selector = np.abs(s_weights.flatten() - np.nanmax(s_weights))<tolerance
+        print(max_selector.sum())
+        max_pos_s = np.argwhere(max_selector).flatten()
+        max_s = s_weights.flat[max_pos_s[0]]
     
     if v_valid.any():
-        max_pos_v = np.nanargmax(v_weights)
-        max_v = v_weights.flat[max_pos_v]
+        max_pos_v = np.argwhere(np.abs(v_weights.flatten() - np.nanmax(v_weights))<tolerance).flatten()
+        max_v = v_weights.flat[max_pos_v[0]]
 
     if  max_s > max_v:
-      touch(max_pos_s, state, solid=True)
+      print(max_pos_s)
+      for pos in max_pos_s:
+        touch(pos, state, solid=True)
     else:
-      touch(max_pos_v, state, solid=False)
+      print(max_pos_v)
+      for pos in max_pos_v:
+        touch(pos, state, solid=False)
 
 def touch(flat_index: int, state: GeneratorState, solid: bool, track_possible: bool=True):
   """Perform a touch on the given index of the flattened map and track the consequences"""

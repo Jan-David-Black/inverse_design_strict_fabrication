@@ -9,7 +9,7 @@ docker:
 	docker build . -t id
 
 arm_env:
-	CONDA_SUBDIR=osx-arm64 conda env create -f environment.yml -n y
+	CONDA_SUBDIR=osx-arm64 mamba env create -f environment.yml -n y
 
 .PHONY: rust
 rust:
